@@ -26,5 +26,11 @@ def parse_html(html_content, pipeline_type):
         'data': table_data
     }
 
-result = parse_html(html_string, pipeline_type)
-print(json.dumps(result, indent=4))
+if __name__ == "__main__":
+    import sys
+    # Retrieve HTML content string from command line arguments
+    html_content = sys.argv[1]
+    # Retrieve pipeline_type variable from command line arguments
+    pipeline_type = sys.argv[2]
+    result = parse_html(html_content, pipeline_type)
+    print(json.dumps(result, indent=4))
