@@ -1,5 +1,13 @@
 import json
 from bs4 import BeautifulSoup
+if __name__ == "__main__":
+    import sys
+    # Retrieve HTML content string from command line arguments
+    html_content = sys.argv[1]
+    # Retrieve pipeline_type variable from command line arguments
+    pipeline_type = sys.argv[2]
+    result = parse_html(html_content, pipeline_type)
+    print(json.dumps(result, indent=4))
 
 def parse_html(html_content, pipeline_type):
     # Parse the HTML content
@@ -34,12 +42,3 @@ def parse_html(html_content, pipeline_type):
         'pipeline_type': pipeline_type,
         'data': table_data
     }
-
-if __name__ == "__main__":
-    import sys
-    # Retrieve HTML content string from command line arguments
-    html_content = sys.argv[1]
-    # Retrieve pipeline_type variable from command line arguments
-    pipeline_type = sys.argv[2]
-    result = parse_html(html_content, pipeline_type)
-    print(json.dumps(result, indent=4))
