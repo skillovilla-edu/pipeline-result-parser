@@ -8,26 +8,35 @@ def parse_html(html_content, pipeline_type):
     # Extract the summary data
     summary_div = soup.find('div', {'id': 'summary'})
     summary_table = summary_div.find('table')
-    summary_row = summary_table.find('tr')
+    summary_rows = summary_table.find_all('tr')
 
     # Extract individual summary data
-    columns = summary_row.find_all('td')
-    row_data = {
-        'tests': int(columns[0].find('div', {'id': 'tests'}).find('div', {'class': 'counter'}).text.strip()),
-        'failures': int(columns[1].find('div', {'id': 'failures'}).find('div', {'class': 'counter'}).text.strip()),
-        'ignored': int(columns[2].find('div', {'id': 'ignored'}).find('div', {'class': 'counter'}).text.strip()),
-        'duration': columns[3].find('div', {'id': 'duration'}).find('div', {'class': 'counter'}).text.strip()
-    }
+    summary_data = {}
+    for row in summary_rows:
+        columns = row.find_all('td')
+        if columns:
+            tests_div = columns[0].find('div', {'id': 'tests'})
+            failures_div = columns[1].find('div', {'id': 'failures'})
+            ignored_div = columns[2].find('div', {'id': 'ignored'})
+            duration_div = columns[3].find('div', {'id': 'duration'})
+
+            if tests_div and failures_div and ignored_div and duration_div:
+                summary_data = {
+                    'tests': int(tests_div.find('div', {'class': 'counter'}).text.strip()),
+                    'failures': int(failures_div.find('div', {'class': 'counter'}).text.strip()),
+                    'ignored': int(ignored_div.find('div', {'class': 'counter'}).text.strip()),
+                    'duration': duration_div.find('div', {'class': 'counter'}).text.strip()
+                }
 
     # Extract the success rate
     success_rate_div = soup.find('div', {'id': 'successRate'})
     success_rate = success_rate_div.find('div', {'class': 'percent'}).text.strip()
-    row_data['success_rate'] = success_rate
+    summary_data['success_rate'] = success_rate
 
     # Return the result as JSON
     return {
         'pipeline_type': pipeline_type,
-        'data': row_data
+        'data': summary_data
     }
 
 if __name__ == "__main__":
